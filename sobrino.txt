@@ -1,0 +1,653 @@
+html detail summary css object-fit transform
+
+
+Transform CSS permitem que elementos estilizados com CSS sejam transformados em espaço bidimensional. Esta especificação é a convergência das transformações CSS 2D e das especificações de transformações SVG .
+
+
+
+O modelo de renderização de transformação
+Propriedade transform
+Serialização de <função de transformação> s
+Serialização do valor computado de <transform-list>
+propriedade de origem de transformação
+Caixa de referência da transformação : a propriedade da caixa de transformação
+O atributo de transformação SVG
+Especificidade do atributo de transformação SVG
+Sintaxe do atributo de transformação SVG
+Lista de Transformação
+Notação Funcional
+Tipos de dados SVG
+O SVG gradientTransforme os pattern
+Transform atributos funções de transformação SVG
+Espaço de coordenadas do usuário
+Interface SVG DOM para o atributo de transformação
+Animação SVG
+O elemento animateeset
+Elemento neutro para adição
+O atributo "attributeName" do SVG
+funções de transformação
+Funções de Transformação 2D
+As listas de funções de transformação
+
+
+
+
+body {
+  padding: 50px; 
+}
+div {
+  width: 100px;
+  height: 100px;
+  background-color: #0CB1C4;
+  animation-name: spin;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+  /* transform: rotate(3deg); */
+   /* transform: rotate(0.3rad);/ */
+   /* transform: rotate(3grad); */ 
+   /* transform: rotate(.03turn);  */
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+
+
+body {
+  padding: 20px; 
+  text-align:center;
+}
+
+.container {
+  width: 100px;
+  height: 100px;
+  background-color: #0CB1C4;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+ 0% {
+  transform: rotateZ(0deg);
+ }
+ 100% {
+  transform: rotateZ(360deg);
+ }
+}
+
+
+
+
+
+
+A transformpropriedade permite transformar visualmente um elemento em um espaço bidimensional ou tridimensional.
+
+Usando transform, os elementos podem ser traduzidos, girados e / ou dimensionados em espaço bidimensional ou tridimensional.
+
+Mais especificamente, a transformpropriedade transforma o sistema de coordenadas de um elemento, resultando na transformação do elemento no espaço.
+
+A transformpropriedade toma como valor uma lista de funções de transformação (consulte a seção Valores abaixo) ou none. O sistema de coordenadas do elemento transformado é transformado por um valor de transformação final obtido pela conversão de cada função na lista em sua matriz correspondente e, depois, pela multiplicação dessas matrizes.
+
+Qualquer valor transformdiferente de noneresulta na criação de um contexto de empilhamento e de um bloco de contenção. Isso significa que o elemento transformado atua como um bloco de contenção para descendentes posicionados fixos .
+
+A matriz de transformação usada para aplicar as transformações a um elemento também é afetada pelo valor da transform-originpropriedade que, como o próprio nome sugere, é usada para especificar a origem das transformações - essa origem é a origem do sistema de coordenadas do elemento em o tempo de transformação.
+
+O sistema de coordenadas
+Cada elemento no CSS tem um sistema de coordenadas cuja origem está no canto superior esquerdo do elemento - isso é conhecido como o sistema de coordenadas inicial .
+
+Quando você usa transform, a origem do sistema de coordenadas é movida para o centro do elemento. Isso ocorre porque o transform-originvalor padrão da propriedade é 50% 50%, o que traduz a origem para o centro do elemento. Depois disso, todas as transformações são aplicadas ao elemento com base na nova posição do sistema de coordenadas.
+
+sistema de coordenadas
+O sistema de coordenadas inicial e o sistema de coordenadas quando as transformações de CSS são usadas com o transform-originvalor padrão .
+Você pode especificar para onde deseja mover a origem usando a transform-originpropriedade, se não quiser que a origem seja movida para o centro. Diferentes origens de transformação são úteis dependendo do efeito de transformação desejado. Veja a transform-originentrada da propriedade para mais exemplos e casos de uso.
+
+Se você girar ou inclinar o elemento usando a transformpropriedade, transformará e / ou distorcerá todo o seu sistema de coordenadas, e todas as transformações subsequentes serão aplicadas com base na transformação do novo sistema de coordenadas. É por isso que a ordem das transformações é muito importante - ordens diferentes resultarão em transformações diferentes. Isso faz sentido, considerando que as transformações são traduzidas em matrizes, e multiplicar duas matrizes em matemática dará resultados diferentes dependendo da ordem dessas matrizes. Por exemplo, o axb não resultará no mesmo resultado que o bxa (a menos que um deles seja a matriz de identidade).
+
+Por exemplo, se você quiser traduzir um elemento e girá-lo em sua nova posição, faça-o na ordem mencionada: traduza e depois gire. Se você girar um elemento primeiro, o sistema de coordenadas também será rotacionado e, em seguida, a tradução em uma determinada direção poderá não resultar no resultado esperado. Se você girasse um elemento em 90 graus em torno do eixo y, por exemplo, seu eixo x apontaria para o lado de dentro da tela, longe de você, então se você aplicar uma tradução ao longo do eixo x, o elemento não se moverá para a direita, ele se moverá para longe de você. Portanto, é importante observar a ordem em que você escreve as funções de transformação notransformpropriedade - a primeira função será aplicada primeiro e a última função será aplicada por último. Isso ajuda a visualizar o sistema de coordenadas em sua mente o tempo todo para garantir que você não está perdendo esse ponto.
+
+Trivialidades e Notas
+Transformações aplicadas a um elemento afetam a renderização visual, mas não afetam o layout CSS além de afetar o estouro. Isso significa que, independentemente do espaço ocupado pelo elemento antes de transformá-lo, ele continuará sendo usado após a transformação, e as transformações não terão efeito sobre como os elementos ao redor do elemento transformado fluem. A transformpropriedade não afeta o fluxo do conteúdo em torno do elemento transformado. No entanto, a extensão da área de overflow leva em consideração os elementos transformados. Esse comportamento é semelhante ao que acontece quando os elementos são compensados ??por meio do posicionamento relativo . Portanto, se o valor da overflowpropriedade for scrollouauto, barras de rolagem aparecerão conforme necessário para ver o conteúdo que é transformado fora da área visível.
+
+Enquanto alguns valores da transformpropriedade permitem que um elemento seja transformado em um sistema de coordenadas tridimensional, os elementos em si não são objetos tridimensionais. Em vez disso, eles existem em um plano bidimensional (uma superfície plana) e não têm profundidade.
+
+Quando um elemento é transformado, um valor de fixedpara a background-attachmentpropriedade é tratado como se tivesse um valor de scroll. O valor computado de background-attachmentnão é afetado.
+
+Além transform-origindo papel da propriedade nas transformações CSS, as propriedades perspectivee perspective-originpodem ser usadas para adicionar uma sensação de profundidade a uma cena, e a transform-stylepropriedade é usada para preservar o espaço tridimensional em um elemento; isso é útil quando você está aninhando transformações CSS. Todas essas propriedades são geralmente usadas em conjunto umas com as outras para criar transformações CSS em duas ou três dimensões. Você pode ler mais sobre cada uma dessas propriedades em suas respectivas entradas.
+
+Sintaxe Oficial
+Sintaxe:
+transformar: nenhum | < lista de transformação >
+Inicial: nenhum
+Aplica-se a: elementos transformáveis
+Animatable: sim
+Notas
+A <transform-list>é uma lista de uma ou mais funções de transformação. Essas funções são descritas na seção Valores abaixo.
+
+Valores
+Você pode aplicar uma transformação a um elemento usando um dos seguintes transformvalores de propriedade:
+
+translate()
+translateX()
+translateY()
+scale()
+scaleX()
+scaleY()
+rotate()
+skew()
+skewX
+skewY
+matrix()
+translateZ
+translate3d()
+scaleZ()
+scale3d()
+rotateX()
+rotateY()
+rotateZ()
+rotate3d()
+matrix3d()
+perspective()
+Algumas dessas funções são usadas para aplicar transformações bidimensionais, outras são usadas para aplicar transformações tridimensionais.
+
+Funções de transformação 2D:
+traduzir()
+transformar : translate ( tx  [, ty] ?); / * o ponto de interrogação indica que o segundo valor é opcional * /
+                        
+A translate()função é usada para traduzir o elemento por um vetor [tx, ty] , onde tx é a translação ao longo do eixo x, e ty é a translação ao longo do eixo y. Se ty não for fornecido, será considerado zero e o elemento será traduzido somente no eixo x. Os valores tx e ty são fornecidos como a <length>ou como a percentage. Não incluir um tipo de unidade fará com que o número seja interpretado como uma “unidade do usuário”.
+
+Os valores de translação positivos moverão o elemento ao longo da direção positiva do eixo e os valores negativos o moverão na direção oposta.
+
+Exemplos:
+
+transformar : translate (100 px ); / * converte o elemento em 
+100 px no eixo x * / transform : translate ( -100px ); / * converte o elemento em
+ 100 px no eixo x * / transform : translate (50 px , 300 px ); / * converte o elemento 50px para a direita e 300px para baixo * / 
+transform : translate (50%, 10%); / * converte o elemento em 50% de sua largura para a esquerda e 10% de sua altura na parte inferior * / 
+transform : translate ( -100%); / * converte o elemento -100% para a esquerda * / 
+transform : translate (100 px , 100 px ); / * veja o resultado na seguinte imagem * /
+                        
+O resultado da aplicação de uma tradução a um elemento:
+
+traduzir-example
+O resultado da aplicação transform: translate(100px, 100px);a um elemento. Observe a posição da origem da transformação.
+translateX ()
+transform : translateX (tx);
+                        
+A translateX()função é usada para traduzir um elemento pelo valor especificado ao longo do eixo x. O valor tx é fornecido como um <length>ou como um percentage. Não incluir um tipo de unidade fará com que o número seja interpretado como uma “unidade do usuário”.
+
+Os valores de translação positivos moverão o elemento ao longo da direção positiva do eixo x, e os valores negativos o moverão na direção oposta.
+
+Exemplos:
+
+transformar : translateX (300 px);
+transformar : translateX (-50%);
+transformar : translateX (150%);
+                        
+translateY ()
+transformar : translateY (ty);
+                        
+A translateY()função é usada para traduzir um elemento pelo valor especificado ao longo do eixo x. O valor ty é fornecido como um <length>ou como um percentage. Não incluir um tipo de unidade fará com que o número seja interpretado como uma “unidade do usuário”.
+
+Os valores de translação positivos moverão o elemento ao longo da direção positiva do eixo y, e os valores negativos o moverão na direção oposta.
+
+Exemplos:
+
+transformar : translateY (300 px);
+transformar : translateY (-50%);
+transformar : translateY (150%);
+                        
+escala()
+transformar : escala (< número > [, <número>] ?); / * o ponto de interrogação indica que o segundo valor é opcional * /
+                            
+A scale()função é usada para dimensionar um elemento para cima ou para baixo, fazendo com que pareça maior ou menor. Ele toma um ou dois <number>s sem unidade como um valor, sx e sy , onde sx escalará o elemento na direção do eixo x, e sy o escalará na direção da direção do eixo y. Se apenas um valor ( sx ) é fornecido, o segundo ( sy ) é considerado igual ao primeiro.
+
+Se o valor fornecido for maior que um, o elemento será dimensionado - ele parecerá maior na direção correspondente. Se o valor for igual a um, o elemento permanece inalterado (na direção correspondente). Se o valor estiver entre zero e um exclusivamente, o elemento será reduzido. Se o valor for zero, o elemento desaparece. Valores negativos são permitidos, mas eles não escalam o elemento. Na verdade, eles fazem com que o elemento transformado seja virado em qualquer direção!
+
+Exemplos:
+
+transformar : escala (1, 1); / * o elemento está inalterado * / 
+transform : scale (2, 2); / * elemento parece duas vezes mais que seu tamanho original * / 
+transform : scale (1, 2); / * elemento é dimensionado apenas verticalmente pelo dobro de seu tamanho vertical e seu tamanho horizontal é inalterado. Efeito semelhante ao de scaleY (2) (ver próximo valor) * / 
+transform : scale (2, 1); / * elemento é dimensionado apenas horizontalmente pelo dobro do tamanho horizontal e seu tamanho vertical é inalterado. Efeito semelhante ao de scaleX (2) (veja o próximo valor) * / 
+transform : scale (3);/ * dimensiona o elemento para 3 vezes o seu tamanho * / 
+transform : scale (0 .5 ); / * elemento é dimensionado para parecer metade do seu tamanho * / 
+transform : scale (0); / * elemento é dimensionado para que ele desapareça * / 
+transform : scale ( -1 ); / * irá inverter o elemento em ambas as direções * /
+                            
+A imagem a seguir mostra o resultado da aplicação de diferentes scale()transformações em uma imagem. O primeiro da esquerda é a imagem sem transformação. O segundo é o resultado da aplicação transform: scale(2);, o terceiro é o resultado da aplicação transform: scale(0.5)e o quarto é o resultado da aplicação transform: scale(0.5, 1.5);. Observe como as imagens se sobrepõem umas às outras porque a transformação em cada uma delas não afeta o fluxo do conteúdo em torno dela.
+
+exemplo de escala
+O resultado da aplicação de diferentes scale()transformações em uma imagem. O primeiro da esquerda é a imagem sem transformação. O segundo é o resultado da aplicação transform: scale(2);, o terceiro é o resultado da aplicação transform: scale(0.5)e o quarto é o resultado da aplicação transform: scale(0.5, 1.5);.
+A imagem a seguir é o resultado da aplicação scale()(e suas duas variações) com um valor negativo em uma imagem:
+
+escala de flip
+Imagem mostrando o resultado da aplicação das funções scale () com valores negativos em uma imagem.
+escalaX ()
+transform: scaleX ( < número > );
+                            
+A scaleX()função é usada para dimensionar um elemento para cima ou para baixo, fazendo com que pareça maior ou menor, na direção do eixo x . Leva um sx sem unidade como um valor, que é usado para dimensionar o tamanho do elemento ao longo do eixo x. <number>
+
+Se o valor fornecido for maior que um, o elemento será dimensionado - ele parecerá maior ao longo do eixo x. Se o valor for igual a um, o elemento permanecerá inalterado nessa direção. Se o valor estiver entre zero e um exclusivamente, o elemento será reduzido ao longo do eixo x. Se o valor for zero, o elemento desaparece. Valores negativos são permitidos, mas eles não escalam o elemento. De fato, eles fazem com que o elemento transformado seja virado horizontalmente (como se fosse girado ao longo do eixo y)!
+
+Exemplos:
+
+transformar : escala X (2); / * dimensiona o elemento para o dobro do tamanho ao longo do eixo x * / 
+transform : scaleX (1); / * o elemento está inalterado * / 
+transform : scaleX (0 .25 ); / * dimensiona o elemento ao longo do eixo x para o tamanho do quarto * / 
+transform : scaleX ( -1 ); / * inverte o elemento ao longo do eixo x * /
+                            
+Veja o scale()valor acima para ver como um valor negativo inverte um elemento quando aplicado usando scaleX().
+
+escalaY ()
+transform: scaleY ( < número > );
+                            
+A scaleY()função é usada para dimensionar um elemento para cima ou para baixo, fazendo com que pareça maior ou menor, na direção do eixo y . Ele usa um sy sem unidade como valor, que é usado para dimensionar o tamanho do elemento ao longo do eixo y. <number>
+
+Se o valor fornecido for maior que um, o elemento será dimensionado - ele parecerá maior ao longo do eixo y. Se o valor for igual a um, o elemento permanecerá inalterado nessa direção. Se o valor estiver entre zero e um exclusivamente, o elemento será reduzido ao longo do eixo y. Se o valor for zero, o elemento desaparece. Valores negativos são permitidos, mas eles não escalam o elemento. De fato, eles fazem com que o elemento transformado seja virado verticalmente (como se fosse girado ao longo do eixo x)!
+
+Exemplos:
+
+transformar : escalaY (2); / * dimensiona o elemento para o dobro do tamanho ao longo do eixo y * / 
+transform : scaleY (1); / * o elemento está inalterado * / 
+transform : scaleY (0, 25 ); / * dimensiona o elemento ao longo do eixo y para o tamanho do quarto * / 
+transform : scaleY ( -1 ); / * inverte o elemento ao longo do eixo y * /
+                            
+Veja o scale()valor acima para ver como um valor negativo inverte um elemento quando aplicado usando scaleY().
+
+girar ()
+transformar: girar ( < ângulo > );
+                            
+A rotate()função é usada para girar um elemento no espaço bidimensional. O elemento é girado por um ângulo que é passado para a função como um <angle>valor. O elemento é rotacionado sobre a origem, conforme definido pela transform-originpropriedade.
+
+Um valor positivo irá girar o elemento no sentido horário. Um valor negativo irá girá-lo no sentido anti-horário.
+
+Exemplos:
+
+transformar : girar (45deg);
+transformar : girar (-60deg);
+transformar : girar (1.5rad);
+transformar : girar (1 volta);
+                            
+A imagem a seguir mostra o resultado da aplicação de um valor de rotação positivo e negativo a uma imagem. Observe como as imagens se sobrepõem umas às outras porque a transformação em cada uma delas não afeta o fluxo do conteúdo em torno dela.
+
+rodar exemplo
+O resultado da aplicação de nenhuma rotação, uma rotação positiva e uma rotação negativa em uma imagem. A rotate()função positiva gira a imagem no sentido horário, enquanto o valor negativo gira no sentido anti-horário.
+inclinação ()
+transform: skew ( < angle > [, < angle > ]?);
+                            
+A skew()função é usada para inclinar um elemento. Inclinar um elemento é como aplicar um efeito de inclinação sobre ele. É como pegar dois vértices opostos de um retângulo e depois puxá-los em direções opostas, transformando o retângulo em um paralelogramo.
+
+Leva um ou dois argumentos: ax e ay . Ambos são anglevalores. O primeiro valor ( ax ) inclina o elemento ao longo do eixo xeo segundo argumento ( aa ) inclina-o ao longo do eixo y. Inclinar-se ao longo do eixo x é como puxar os ângulos do retângulo para os lados, e inclinar ao longo do eixo y é como puxá-los verticalmente em direções opostas. Os dois valores de ângulo determinam a quantidade pela qual o elemento está inclinado. Se o segundo valor não for fornecido, será considerado zero.
+
+A função skew () estava presente nos primeiros rascunhos. Ele foi removido, mas ainda está presente em algumas implementações. *Não use isso*. Para inclinar um elemento em qualquer direção, use asfunçõesskewX()eskewY()listadas abaixo. Observe também que o comportamento deskew()é diferente de multiplicarskewX()comskewY().
+
+skewX ()
+transform: skewX ( < ângulo > );
+                            
+A skewX()função é usada para inclinar um elemento. Inclinar um elemento é como aplicar um efeito de inclinação sobre ele. No caso de skewX(), é como pegar dois vértices opostos de um retângulo e, em seguida, puxá-los ao longo do eixo x em direções opostas, transformando o retângulo em um paralelogramo.
+
+Leva um machado como um valor. O elemento é inclinado pelo valor do ângulo. Você pode imaginar dois vértices opostos (digamos, o superior esquerdo e o inferior direito, por exemplo) sendo puxados em direções opostas (o superior esquerdo puxado para a esquerda e o inferior para a direita) até que o valor interno desses vértices se torne 90 graus . angle
+
+Se o valor do ângulo for positivo, os cantos superior esquerdo e inferior direito do retângulo serão “puxados”. Se o valor for negativo, os ângulos superior direito e inferior esquerdo serão puxados. Um valor de ângulo de 90deg (ou -90deg) fará com que o elemento desapareça. Um valor de 180deg (ou -180deg) deixará inalterado.
+
+Exemplos:
+
+transform : skewX (30deg);
+transformar : skewX (-30deg);
+transformar : skewX (-0.5rad);
+transformar : skewX (-1turn);
+transformar : skewX (-90deg);
+                            
+A imagem a seguir mostra o resultado da aplicação skewX()a uma imagem usando um ângulo positivo e, em seguida, um ângulo negativo do mesmo valor.
+
+skewX-example
+O resultado da aplicação skewX()a uma imagem usando um ângulo positivo e, em seguida, um ângulo negativo do mesmo valor.
+Lembre-se que inclinar um elemento também irá inclinar seu sistema de coordenadas com ele . Portanto, depois de aplicar uma transformação de inclinação ao seu elemento, você precisa estar ciente de que não tem mais um sistema de coordenadas ortogonais. Quando o sistema de coordenadas está inclinado, transformações consequentes podem resultar em resultados inesperados se você não calculá-las com base no novo sistema de coordenadas. Você pode ler mais sobre sistemas de coordenadas em CSS e SVG aqui .
+
+skewY ()
+transformar: skewY ( < ângulo > );
+                            
+A skewY()função é usada para inclinar um elemento. Inclinar um elemento é como aplicar um efeito de inclinação sobre ele. No caso de skewY(), é como pegar dois vértices opostos de um retângulo e, em seguida, puxá-los ao longo do eixo y em direções opostas, transformando o retângulo em um paralelogramo.
+
+É preciso um valor como ay . O elemento é inclinado pelo valor do ângulo. Você pode imaginar dois vértices opostos (digamos, o superior esquerdo e o inferior direito, por exemplo) sendo puxados em direções opostas (o superior esquerdo puxado para cima e o inferior direito para o inferior) até que o valor interno desses vértices se torne 90 graus . angle
+
+Se o valor do ângulo for positivo, os cantos superior esquerdo e inferior direito do retângulo serão “puxados”. Se o valor for negativo, os ângulos superior direito e inferior esquerdo serão puxados. Um valor de ângulo de 90deg (ou -90deg) fará com que o elemento desapareça. Um valor de 180deg (ou -180deg) deixará inalterado.
+
+Exemplos:
+
+transformar : skewY (30deg);
+transformar : skewY (-30deg);
+transformar : skewY (-0.5rad);
+transformar : skewY (-1turn);
+transformar : skewY (-90deg);
+                            
+A imagem a seguir mostra o resultado da aplicação skewY()a uma imagem usando um ângulo positivo e, em seguida, um ângulo negativo do mesmo valor.
+
+exemplo skewY
+O resultado da aplicação skewY()a uma imagem usando um ângulo positivo e, em seguida, um ângulo negativo do mesmo valor.
+Lembre-se que inclinar um elemento também irá inclinar seu sistema de coordenadas com ele . Portanto, depois de aplicar uma transformação de inclinação ao seu elemento, você precisa estar ciente de que não tem mais um sistema de coordenadas ortogonais. Quando o sistema de coordenadas está inclinado, transformações consequentes podem resultar em resultados inesperados se você não calculá-las com base no novo sistema de coordenadas. Você pode ler mais sobre sistemas de coordenadas em CSS e SVG aqui .
+
+matriz()
+transformar: matriz ( < número > [, < número > ] {5,5})
+                            
+A matrix()função é usada para especificar uma matriz de transformação bidimensional. Pode ser usado para combinar várias transformações em uma. Por exemplo, em vez de usar duas (ou mais) funções de transformação (veja acima) em uma declaração como esta:
+
+transform : rotate (45deg) translate (24px, 25px);
+                            
+Usando a matrix()função, podemos combinar essas duas transformações em uma matriz:
+
+transformar : matriz (0 ,7071067811865476 , 0 ,7071067811865475 , -0 ,7071067811865475 , 0 ,7071067811865476 , -0 ,7071067811865426 , 34 ,648232278140824 );
+                            
+Como você pode ver, calcular os valores da matrix()função não seria fácil se você não é experiente em matemática. Estes cálculos também provavelmente não foram feitos para serem feitos à mão. Felizmente, Eric Meyer e Aaron Gustafson criaram uma ferramenta muito útil que pode fazer os cálculos para você - tudo que você faz é inserir as transformações desejadas e clicar no botão vermelho da ferramenta para gerar a matrix()função equivalente para você.
+
+Funções de Transformação 3D:
+Além das funções de transformação bidimensional, você pode aplicar transformações tridimensionais usando as variações tridimensionais das funções bidimensionais.
+
+translateZ ()
+transform : translateZ (tz);
+                        
+A translateZ()função é usada para traduzir um elemento pelo valor especificado ao longo do eixo z. O valor tz é fornecido como <length>(porcentagens não são válidas aqui). Não incluir um tipo de unidade fará com que o número seja interpretado como uma “unidade do usuário”.
+
+Os valores de translação positivos moverão o elemento ao longo da direção positiva do eixo z, e os valores negativos o moverão na direção oposta.
+
+Exemplos:
+
+transformar : translateZ (300 px);
+transform : translateZ (-5em);
+transform : translateZ (4vh);
+                        
+translate3d ()
+transform : translate3d (tx, ty, tz);
+                        
+A translate3d()função é o equivalente tridimensional da translate()função. É usado para traduzir o elemento por um vetor [tx, ty, tz] , onde tx é a translação ao longo do eixo x, ty é a translação ao longo do eixo y, e tz é a translação ao longo do eixo z. Os valores tx e ty são fornecidos como a <length>ou como a percentage. O valor de tx precisa ser um <length>e não pode ser definido como porcentagem. Não incluir um tipo de unidade fará com que o número seja interpretado como uma “unidade do usuário”.
+
+Os valores de translação positivos moverão o elemento ao longo da direção positiva do eixo e os valores negativos o moverão na direção oposta.
+
+Exemplos:
+
+transformar : translate3d (100px, 100px, -200px);
+transform : translate3d (50%, -100%, 1em);
+transformar : translate3d (-100px, -30px, 5vw);
+                        
+escalaZ ()
+transform: scaleZ ( < número > );
+                            
+O scaleZ()é usado para dimensionar um elemento na terceira dimensão , ao longo do eixo z. Leva um sz sem unidade como um valor, que é usado para dimensionar o tamanho do elemento na direção correspondente. <number>
+
+Exemplos:
+
+transformar : escala Z (2); 
+transformar : escala Z (1); / * o elemento está inalterado * /
+ transform : scaleZ (0.25); 
+transformar : escala Z (-1);
+                            
+Como todos os elementos em CSS são bidimensionais, você pode se perguntar como scaleZ()seria realmente escalar o elemento se um elemento em CSS não tivesse uma “espessura”.
+
+De fato, scaleZ()realmente dimensiona o elemento ao longo do eixo z . Praticamente, é como se o próprio eixo z fosse dimensionado e, em seguida, a posição do elemento no eixo z seria automaticamente afetada pela operação de escala no eixo.
+
+O efeito de scaleZé mais óbvio quando você tem um elemento com um perspectiveconjunto e que é girado no espaço tridimensional ou traduzido ao longo do eixo z. Então, vamos passar por alguns exemplos.
+
+No primeiro exemplo, temos dois elementos que estão posicionados no espaço tridimensional e são traduzidos ao longo do eixo z usando a translateZ()função. Ambos os elementos são traduzidos pela mesma distância. Então, vamos escalar o segundo elemento (o da direita) usando scaleZ(2). A imagem a seguir mostra o resultado da aplicação dessas transformações e a diferença entre os dois elementos após o dimensionamento do segundo scaleZ. Observe como o segundo elemento parece maior, porque sua posição no eixo z foi dimensionada à medida que o eixo z é dimensionado - ele parece mais próximo de você e, portanto, maior, mas as dimensões reais (largura e altura) permanecem inalteradas.
+
+scaleZ-example-1
+O resultado da aplicação das mesmas transformações a dois elementos, mas com a diferença de dimensionar o segundo elemento à direita usando a scaleZ()função.
+Outro exemplo onde você pode ver o efeito de scaleZé quando dois elementos também são transformados da mesma maneira, exceto que, em vez de traduzi-los no espaço tridimensional, eles são rotacionados sobre o eixo x usando rotateX. O segundo elemento (à direita) foi escalonado ao longo do eixo z usando a scaleZ()função. Observe como ele parece mais perto de você e, portanto, maior.
+
+scaleZ-example-2
+O resultado da aplicação das mesmas transformações a dois elementos, mas com a diferença de dimensionar o segundo elemento à direita usando a scaleZ()função.
+Observe que você precisa manter a mesma ordem de transformações entre os dois elementos para ver realmente o efeito de scaleZporque, como mencionado anteriormente, a ordem das transformações é importante e as ordens diferentes resultarão em transformações diferentes.
+
+scale3d ()
+transform: scale3d ( < number > , < number > , < number > );
+                        
+A scale3d()função é o equivalente tridimensional da scale()função. Ele é usado para escalar um elemento para cima ou para baixo, fazendo com que pareça maior ou menor. São necessários três <number>s sem unidade como valor, sx , sy e sz , onde sx dimensionará o elemento na direção da x-asix, sy o dimensionará na direção do eixo y, e sz o dimensionará na a direção do eixo z.
+
+Se o valor fornecido for maior que um, o elemento será dimensionado e parecerá maior na direção correspondente. Se o valor for igual a um, o elemento permanece inalterado (na direção correspondente). Se o valor estiver entre zero e um exclusivamente, o elemento será reduzido. Se o valor for zero, o elemento desaparece. Valores negativos são permitidos, mas eles não escalam o elemento. De fato, valores sx e sy negativos fazem com que o elemento transformado seja invertido em qualquer direção! Veja a scale()seção acima para exemplos.
+
+Exemplos:
+
+transformar : escala3d (1, 1, 1); / * o elemento está inalterado * /
+ transform : scale3d (2, 2, 2); / * elemento parece duas vezes mais que seu tamanho original * /
+ transform : scale3d (1, 2, 0); 
+transformar : escala3d (2, 1, 3);
+transformar : scale3d (-1, -1, -1);
+                        
+rotate3d ()
+transformar: rotate3d ( < number > , < number > , < number > , < angle > );
+                        
+A rotate3d()função é o equivalente tridimensional da rotate()função. Ele é usado para girar um elemento no espaço tridimensional. O elemento é rotacionado por um <angle>que é passado como o quarto parâmetro da função. Os primeiros três parâmetros especificam a direção de rotação e juntos formam um vetor de direção [x, y, z] que é usado para aplicar a rotação na direção especificada.
+
+Um valor de ângulo positivo irá girar o elemento no sentido horário ao longo do eixo correspondente, e um valor negativo irá girá-lo no sentido anti-horário ao longo desse eixo.
+
+A direção no sentido horário é determinada observando o vetor a partir do final do vetor (onde geralmente está a seta que aponta) em direção à origem. A imagem a seguir mostra o sentido de rotação positivo (sentido horário) ao longo dos três eixos:
+
+rotate3d
+O sentido positivo de rotação ao longo dos três eixos. Observe como se você ficar no final de cada vetor e olhar para a origem, a rotação no sentido horário corresponde àquela mostrada na imagem.
+Os primeiros três parâmetros de rotate3d()especificarão o vetor de direção ao longo do qual a rotação ocorrerá e o ângulo especificará a direção: no sentido horário ao longo do vetor ou no sentido anti-horário.
+
+Exemplos:
+
+transformar : rotate3d (1, 1, 2, 45 graus );
+transformar : rotate3d (2, 1, 3, 33 graus );
+transformar : rotate3d (1, 0, 0, 45 graus ); O elemento / * é girado no sentido horário ao longo do eixo x em 45deg * / 
+transform : rotate3d (0, 1, 0, 45 deg ); O elemento / * é girado no sentido horário ao longo do eixo y em 45deg * / 
+transform : rotate3d (0, 0, 1, 45 deg ); / * elemento é girado no sentido horário ao longo do eixo z em 45deg * / 
+transform : rotate3d(0, 0, 0, 50 graus ); / * NENHUMA ROTAÇÃO É APLICADA * /
+                        
+A imagem a seguir mostra o resultado da aplicação rotate3d(1, 1, 1, 50deg);em uma imagem:
+
+rotate3d-example
+O resultado da aplicação rotate3d(1, 1, 1, 50deg);a uma imagem
+rotateX ()
+transform: rotateX ( < angle > );
+                        
+A rotateX()função é usada para girar um elemento sobre o eixo x no espaço tridimensional. É equivalente a:
+
+transform: rotate3d (1, 0, 0, < ângulo > );
+                        
+Onde rotate3d()está a função de transformação usada para rotacionar um elemento no espaço tridimensional.
+
+É preciso <angle>um valor. O elemento é girado então pelo valor especificado sobre o eixo x. Se o valor for positivo, o elemento será girado no sentido horário, se for negativo, será girado no sentido anti-horário. A direção no sentido horário é determinada olhando-se o eixo x a partir do final (onde geralmente está a seta que aponta) em direção à origem. Veja a rotate3d()seção acima para uma representação visual da direção no sentido horário ao longo do eixo x.
+
+Exemplos:
+
+transform : rotateX (30deg);
+transform : rotateX (-135deg);
+transform : rotateX (90deg);
+                        
+A imagem a seguir mostra o resultado da aplicação rotateX(50deg)e rotateX(-50deg)em uma imagem:
+
+rotateX-example
+O resultado da aplicação rotateX(50deg)e rotateX(-50deg)de uma imagem
+rotateY ()
+transform: rotateY ( < angle > );
+                        
+A rotateY()função é usada para girar um elemento sobre o eixo y no espaço tridimensional. É equivalente a:
+
+transform: rotate3d (0, 1, 0, < ângulo > );
+                        
+Onde rotate3d()está a função de transformação usada para rotacionar um elemento no espaço tridimensional.
+
+É preciso <angle>um valor. O elemento é girado então pelo valor especificado sobre o eixo y. Se o valor for positivo, o elemento será girado no sentido horário, se for negativo, será girado no sentido anti-horário. A direção no sentido horário é determinada olhando-se o eixo x a partir do final (onde geralmente está a seta que aponta) em direção à origem. Veja a rotate3d()seção acima para uma representação visual da direção no sentido horário ao longo do eixo x.
+
+Exemplos:
+
+transform : rotateY (30deg);
+transform : rotateY (-135deg);
+transform : rotateY (90deg);
+                        
+A imagem a seguir mostra o resultado da aplicação rotateY(50deg)e rotateY(-50deg)em uma imagem:
+
+rotateY-example
+O resultado da aplicação rotateY(50deg)e rotateY(-50deg)de uma imagem
+rotateZ ()
+transform: rotateZ ( < angle > );
+                        
+A rotateZ()função é usada para girar um elemento sobre o eixo z no espaço tridimensional. É equivalente a:
+
+transform: rotate3d (0, 0, 1, < ângulo > );
+                        
+Onde rotate3d()está a função de transformação usada para rotacionar um elemento no espaço tridimensional.
+
+É preciso <angle>um valor. O elemento é girado então pelo valor especificado sobre o eixo z. Se o valor for positivo, o elemento será girado no sentido horário, se for negativo, será girado no sentido anti-horário. A direção no sentido horário é determinada olhando-se o eixo x a partir do final (onde geralmente está a seta que aponta) em direção à origem. Veja a rotate3d()seção acima para uma representação visual da direção no sentido horário ao longo do eixo x.
+
+Exemplos:
+
+transformar : rotateZ (30deg);
+transformar : rotateZ (-135deg);
+transformar : rotateZ (90deg);
+                        
+A imagem a seguir mostra o resultado da aplicação rotateZ(50deg)e rotateZ(-50deg)em uma imagem:
+
+rotateZ-example
+O resultado da aplicação rotateZ(50deg)e rotateZ(-50deg)de uma imagem
+matrix3d ??()
+transform: matrix3d ??( < número > [, < número > ] {15,15});
+                        
+A matrix3d()função é o equivalente tridimensional da matrix()função. Assim como a matrix()função, matrix3d()é usada para combinar transformações em uma matriz de transformação. Ele é usado para descrever uma sequência de transformações tridimensionais em uma grade de 4 × 4. 
+Por exemplo, em vez de usar duas ou mais funções de transformação em uma declaração assim:
+
+transform : rotate3d (1, 0, 1, 45deg) translate3d (24px, 25px, 100px);
+                        
+Usando a matrix3d()função, podemos combinar essas duas transformações em uma matriz:
+
+transformar : Matrix3D (0 ,8535533905932737 , 0 ,4999999999999999 , 0 ,14644660940672619 , 0, -0 ,4999999999999999 , 0 ,7071067811865476 , 0 ,4999999999999999 , 0, 0 ,14644660940672619 , -0 ,4999999999999999 , 0 ,8535533905932737 , 0, 22 . 62994231491119 , -20 .3223304703363 , 101 .3700576850888 , 1)
+                        
+Como você pode ver, calcular os valores da matrix3d()função não seria fácil se você não é experiente em matemática. Estes cálculos também provavelmente não foram feitos para serem feitos à mão. Felizmente, Eric Meyer e Aaron Gustafson criaram uma ferramenta muito útil que pode fazer os cálculos para você - tudo que você faz é inserir as transformações desejadas e clicar no botão vermelho da ferramenta para gerar a matrix()função equivalente para você.
+
+perspectiva()
+transformar: perspectiva ( < comprimento > )
+                        
+A explicação técnica:
+A perspective()função especifica uma matriz de projeção em perspectiva . Essa matriz escala os pontos em X e Y com base em seu valor Z, pontos de escala com valores positivos de Z fora da origem e aqueles com valores negativos de Z em relação à origem. Pontos no plano z = 0 não são alterados. O <length>parâmetro passado para ele representa a distância do plano z = 0 do visualizador. Valores mais baixos dão uma pirâmide mais achatada e, portanto, um efeito de perspectiva mais pronunciado. Por exemplo, um valor de 1000px dá uma quantidade moderada de escorço e um valor de 200px dá uma quantidade extrema. O valor da profundidade deve ser maior que zero, caso contrário, a função é inválida.
+
+perspectiva-distância
+O círculo azul nesta imagem representa um elemento no espaço tridimensional. A letra d representa o valor da perspectiva, que é a distância presumida entre o olho do espectador e a tela. A letra Z representa a posição do elemento no eixo z. Quanto mais o elemento estiver no eixo z, menor será o aspecto relativo ao visualizador e, quanto mais próximo estiver, maior será a aparência. Este é o efeito da perspectiva no espaço tridimensional.
+Em outras palavras…
+A perspective()função é usada para fornecer uma profundidade de elemento , fazendo com que um elemento maior no eixo z (mais próximo do visualizador) pareça maior, e um elemento mais distante pareça menor. Quanto menor o valor, mais próximo o z-painel é do visualizador, e mais impressionante o efeito; quanto maior o valor, mais longe o elemento é da tela e mais sutil o efeito.
+
+A perspective()função é usada para ativar o espaço tridimensional quando você está aplicando uma transformação tridimensional em um elemento usando qualquer uma das funções listadas acima. Especificar uma perspectiva é importante, caso contrário, o efeito tridimensional ficará achatado e bidimensional.
+
+Uma perspectiva pode ser aplicada usando a perspective()função ou usando a perspectivepropriedade. Há uma grande diferença entre esses dois, mas o que deve ser observado neste momento é que a perspective()função é aplicada a um elemento que está sendo transformado no espaço 3D, enquanto a perspectivepropriedade é aplicada a um elemento cujos descendentes estão sendo transformados no espaço 3D. . Existem outras diferenças entre a função perspective e a propriedade, você pode ler mais sobre essas diferenças na perspectiveentrada da propriedade. Nesta entrada, vamos nos concentrar em usar perspective()um elemento transformado em espaço tridimensional, sem perspectiva definida em seu contêiner.
+
+Por exemplo, se você girasse um elemento ao redor do eixo y usando a rotateY()função, você precisa especificar uma perspectiva para criar um espaço tridimensional para as transformações tridimensionais, caso contrário a rotação parecerá plana e dimensional. A imagem a seguir mostra a diferença entre uma imagem girada no espaço tridimensional com uma perspectiva e outra girada sem perspectiva.
+
+exemplo de função de perspectiva
+Imagem mostrando a diferença entre uma imagem girada no espaço tridimensional com uma perspectiva e outra girada sem perspectiva
+A perspective()função recebe um <length>valor como um parâmetro. Quanto menor o valor, mais próximo o z-painel é do visualizador, e mais impressionante o efeito; quanto maior o valor, mais longe o elemento é da tela e mais sutil o efeito. A imagem a seguir mostra o resultado da aplicação de perspective()valores diferentes a um elemento.
+
+exemplos de função de perspectiva
+Imagem mostrando o resultado da aplicação de diferentes valores de perspectiva () a um elemento
+Se você tiver vários elementos transformados em espaço tridimensional que também pertencem ao mesmo contêiner, é recomendável usar a perspectivepropriedade no pai em vez de usar a perspective()função em cada elemento individualmente, caso contrário, o efeito geral pode não ser como seria de esperar, porque a perspective()função resultará em cada elemento ter seu próprio ponto de fuga, enquanto a aplicação da perspectivepropriedade no contêiner fará com que todos os elementos dentro dela tenham o mesmo ponto de fuga. Você pode ler mais sobre isso na perspectiveentrada da propriedade e neste artigo de Dave DeSandro.
+
+Notas
+Um elemento pode ser traduzido usando a positionpropriedade CSS e suas propriedades de deslocamento, mas geralmente é melhor traduzir um elemento usando a translate()função porque ela é acelerada por hardware e, portanto, é melhor para desempenho e para obter traduções mais suaves. A translate3d()função também é usada às vezes para forçar a aceleração de hardware em elementos em navegadores baseados no WebKit para empurrar animações CSS para ele, porque isso leva a animações mais suaves.
+
+Exemplos
+O exemplo a seguir traduz e elemento e o rotaciona e, em seguida, redimensiona. As transformações são bidimensionais, portanto, nenhuma perspectiva é necessária.
+
+div {
+     / * estilos gerais aqui ... * / 
+    width : 100px ;
+    altura : 100 px ;
+    cor de fundo : # 0099CC ;
+    / * transformação * / 
+    transformar : converter (80px, 80px ) escala de rotação (45deg) (1,5, 1,5);
+}
+                
+transformar-exemplo-1
+O resultado da aplicação das transformações acima em um elemento
+O exemplo a seguir aplica uma transformação tridimensional em um elemento. O elemento será girado no eixo Y para que sua frente fique voltada para a direita da tela. Ele também é traduzido ao longo do eixo z, o que faz com que ele se mova para a direita da tela. Isso ocorre porque o eixo z não aponta mais para o visualizador depois que o elemento é girado no eixo y - lembre-se, girar o elemento gira todo o sistema de coordenadas com ele.
+
+Neste exemplo, a perspectiva é aplicada ao elemento usando a perspective()função.
+
+.element {
+     / * ... * / 
+    transform : perspective (800px) rotateY (90deg) translateZ (300px);
+}
+                
+Você pode fazer a mesma transformação, mas, em vez de aplicar a perspectiva ao elemento, é possível ativar o espaço 3D no contêiner.
+
+.parent {
+     / * ... * / 
+    perspective : 800px ;
+}
+.child {
+     / * ... * / 
+    transform : rotateY (90deg) translateZ (300px);
+}
+                
+Demonstração ao vivo
+Clique no elemento na demonstração a seguir para transformá-lo em espaço tridimensional. O efeito de transformação é aplicado ao clicar usando JavaScript. Clicar no elemento mais de uma vez alternará a .transformclasse, que contém as transformações. Transições CSS são usadas para tornar a transformação suave.
+
+
+Suporte de Navegador
+A seguir está a tabela de suporte para transformações CSS bidimensionais:
+
+Transformações 2D CSS3
+Método de transformar um elemento, incluindo rotação, dimensionamento, etc. Inclui suporte para propriedades `transform` e` transform-origin`.
+
+Esboço de trabalho do W3C
+
+Suportado das seguintes versões:
+
+Área de Trabalho
+36
+16
+10
+12
+9
+Celular / Tablet
+9,0
+67
+Não
+69
+62
+* denota o prefixo requerido.
+
+Suportado:simNãoParcialmentePolyfill
+Estatísticas de caniuse.com
+
+A seguir está a tabela de suporte para transformações CSS tridimensionais:
+
+Transformações 3D CSS3
+Método de transformar um elemento na terceira dimensão usando a propriedade `transform`. Inclui suporte para a propriedade `perspective` para definir a perspectiva em z-space e a propriedade` backface-visibility` para alternar a exibição do lado reverso de um elemento transformado em 3D.
+
+Esboço de trabalho do W3C
+
+Suportado das seguintes versões:
+
+Área de Trabalho
+36
+16
+10
+23
+9
+Celular / Tablet
+9,0
+67
+Não
+69
+62
+* denota o prefixo requerido.
+
+Suportado:simNãoParcialmentePolyfill
+Estatísticas de caniuse.com
+
+Leitura Adicional
+Módulo de Transformações CSS Nível 1
+Introdução ao CSS 3D Transforms por David DeSandro
+Entradas Relacionadas
+backface-visibility
+transformação-origem
+girar ()
+matrix3d ??()
+matriz()
+vai mudar
+transformar-estilo
